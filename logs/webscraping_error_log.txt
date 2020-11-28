@@ -1,0 +1,65 @@
+Error from tabula-java:
+Error: Missing root object specification in trailer.
+
+
+Exception Command '['java', '-Djava.awt.headless=true', '-jar', '/opt/anaconda3/envs/energy-env/lib/python3.8/site-packages/tabula/tabula-1.0.4-jar-with-dependencies.jar', '--pages', '4', '--guess', '--format', 'CSV', '--outfile', 'pdf_data.csv', 'dr0_11052017.pdf']' returned non-zero exit status 1.
+2017-05-11 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_11052017.pdf
+Exception HTTP Error 404: Not Found
+2017-05-25 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_25052017.pdf
+Exception Error tokenizing data. C error: Expected 2 fields in line 21, saw 4
+
+2017-06-05 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_05062017.pdf
+Exception 'Unnamed: 12'
+2017-07-05 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_05072017.pdf
+Exception HTTP Error 404: Not Found
+2017-07-13 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_13072017.pdf
+Exception Command '['java', '-Djava.awt.headless=true', '-jar', '/opt/anaconda3/envs/energy-env/lib/python3.8/site-packages/tabula/tabula-1.0.4-jar-with-dependencies.jar', '--pages', '4', '--guess', '--format', 'CSV', '--outfile', 'pdf_data.csv', 'dr0_03082017.pdf']' returned non-zero exit status 1.
+2017-08-03 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_03082017.pdf
+Error from tabula-java:
+Exception in thread "main" java.lang.IndexOutOfBoundsException: Page number does not exist
+	at technology.tabula.ObjectExtractor.extractPage(ObjectExtractor.java:19)
+	at technology.tabula.PageIterator.next(PageIterator.java:29)
+	at technology.tabula.CommandLineApp.extractFile(CommandLineApp.java:166)
+	at technology.tabula.CommandLineApp.extractFileInto(CommandLineApp.java:144)
+	at technology.tabula.CommandLineApp.extractFileTables(CommandLineApp.java:134)
+	at technology.tabula.CommandLineApp.extractTables(CommandLineApp.java:111)
+	at technology.tabula.CommandLineApp.main(CommandLineApp.java:81)
+
+
+Error from tabula-java:
+Exception in thread "main" java.lang.IndexOutOfBoundsException: Page number does not exist
+	at technology.tabula.ObjectExtractor.extractPage(ObjectExtractor.java:19)
+	at technology.tabula.PageIterator.next(PageIterator.java:29)
+	at technology.tabula.CommandLineApp.extractFile(CommandLineApp.java:166)
+	at technology.tabula.CommandLineApp.extractFileInto(CommandLineApp.java:144)
+	at technology.tabula.CommandLineApp.extractFileTables(CommandLineApp.java:134)
+	at technology.tabula.CommandLineApp.extractTables(CommandLineApp.java:111)
+	at technology.tabula.CommandLineApp.main(CommandLineApp.java:81)
+
+
+Exception Command '['java', '-Djava.awt.headless=true', '-jar', '/opt/anaconda3/envs/energy-env/lib/python3.8/site-packages/tabula/tabula-1.0.4-jar-with-dependencies.jar', '--pages', '4', '--guess', '--format', 'CSV', '--outfile', 'pdf_data.csv', 'dr0_25122017.pdf']' returned non-zero exit status 1.
+2017-12-25 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_25122017.pdf
+Exception HTTP Error 404: Not Found
+2018-01-31 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_31012018.pdf
+Exception HTTP Error 404: Not Found
+2018-03-22 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_22032018.pdf
+Exception HTTP Error 404: Not Found
+2018-07-30 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_30072018.pdf
+Exception Error tokenizing data. C error: Expected 3 fields in line 21, saw 4
+
+2019-03-06 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_06032019.pdf
+Exception Error tokenizing data. C error: Expected 3 fields in line 21, saw 4
+
+2019-09-08 00:00:00
+https://mahasldc.in/wp-content/reports/dr0_08092019.pdf
