@@ -16,7 +16,7 @@ generated_date = [start_date + datetime.timedelta(days=x) for x in range(0, (end
 url = "https://mahasldc.in/wp-content/reports/dr0_"
 
 # Creating 'loaddata.csv' to store the data
-with open('hourly_loaddata.csv', mode='w') as csv_file:
+with open('assets/hourly_loaddata.csv', mode='w') as csv_file:
 
   """ Format of the CSV to store the load data (hourly_loaddata.csv)- 
   Date: DMMYYYY or DDMMYYYY;
@@ -36,10 +36,10 @@ with open('hourly_loaddata.csv', mode='w') as csv_file:
       current_url = url + date.strftime("%d%m%Y") + ".pdf" 
 
       # Using tabula.py to extract data in a table from the PDFs
-      tabula.convert_into(current_url, "pdf_data.csv", pages=4) #Jumping to the fourth page where the table for the load data is listed
+      tabula.convert_into(current_url, "assets/pdf_data.csv", pages=4) #Jumping to the fourth page where the table for the load data is listed
 
       # Extracting only the load data of Mumbai from the Table
-      prefinal_data = pandas.read_csv('pdf_data.csv')
+      prefinal_data = pandas.read_csv('assets/pdf_data.csv')
 
       # Loop for extracting the data for each hour
       for i in range(24):
@@ -51,7 +51,7 @@ with open('hourly_loaddata.csv', mode='w') as csv_file:
       print(date)
       print(current_url)
 
-print(pandas.read_csv('hourly_loaddata.csv'))
+print(pandas.read_csv('assets/hourly_loaddata.csv'))
 
 # Execution time
 end_time = time.time()

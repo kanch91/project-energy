@@ -20,7 +20,7 @@ def convertTimeSeriesTo2DMatrix(vectorSeries, sequence_length):
 np.random.seed(1234) # Selecting a random seed
 
 # Pre-processing of the data
-df_raw = pd.read_csv('hourly_loaddata.csv', header=None, skiprows=1) # loading raw data from the CSV
+df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1) # loading raw data from the CSV
 df_raw_array = df_raw.values # numpy array
 
 # daily_load = [df_raw_array[i,:] for i in range(0, len(df_raw)) if i % 24 == 0] # daily load
@@ -102,9 +102,11 @@ plt.plot(y_test + shifted_value)
 plt.xlabel('Hour')
 plt.ylabel('Electricity load (*1e2)')
 plt.show()
-fig.savefig('output_load_forecasting.jpg', bbox_inches='tight')
+fig.savefig('results/final_output.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-test_result = np.vstack((predicted_values, y_test)) + shifted_value
-np.savetxt('load_forecasting_result.txt', test_result)
+test_result = predicted_values + shifted_value
+np.savetxt('results/predicted_values.txt', test_result)
+test_result = y_test + shifted_value
+np.savetxt('results/test_values.txt', test_result)
 
