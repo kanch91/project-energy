@@ -29,7 +29,7 @@ df_raw_array = df_raw.values # numpy array
 hourly_load = [df_raw_array[i,2]/100 for i in range(0, len(df_raw))] # hourly load, 24 for each day
 print(hourly_load)
 
-length_of_sequence = 24 # Storing the length of the sequence for predicting the future value
+length_of_sequence = 24 # Storing the length of the sequence/hours in the day for predicting the future value
 
 # Converting the vector to a 2D matrix using the function above
 hourly_load_matrix = convertTimeSeriesTo2DMatrix(hourly_load, length_of_sequence)

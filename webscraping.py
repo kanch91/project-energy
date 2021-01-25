@@ -15,8 +15,9 @@ generated_date = [start_date + datetime.timedelta(days=x) for x in range(0, (end
 # Url for scraping the load data for every hour
 url = "https://mahasldc.in/wp-content/reports/dr0_"
 
-# Creating 'loaddata.csv' to store the data
-with open('assets/hourly_loaddata.csv', mode='w') as csv_file:
+# Creating a CSV to store the data
+with open('assets/hourly_load_data.csv', mode='w') as load_data:
+# with open('assets/error_log.csv', mode='w') as error_log:
 
   """ Format of the CSV to store the load data (hourly_loaddata.csv)- 
   Date: DMMYYYY or DDMMYYYY;
@@ -26,9 +27,13 @@ with open('assets/hourly_loaddata.csv', mode='w') as csv_file:
   Humidity: Hourly humidity in %
   """
 
-  fieldnames = ['Date', 'Slot', 'Load', 'Temperature', 'Humidity'] # Columns of the data file
-  writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-  writer.writeheader()
+  load_column_names = ['Date', 'Slot', 'Load', 'Temperature', 'Humidity'] # Columns of the data file
+  load_writer = csv.DictWriter(load_data, fieldnames=load_column_names)
+  load_writer.writeheader()
+
+  # error_column_names = ['Exception', 'Date', 'URL']
+  # error_log_writer = csv.DictWriter(error_log, error_column_names)
+  # error_log_writer.writeheader()
 
   # Loop for scraping the data for each date
   for date in generated_date:
@@ -44,14 +49,15 @@ with open('assets/hourly_loaddata.csv', mode='w') as csv_file:
       # Loop for extracting the data for each hour
       for i in range(24):
         value = int(prefinal_data["Unnamed: 12"][i+4]) # Extracting the value & casting
-        writer.writerow({'Date': date.strftime("%d%m%Y"), 'Slot': i, 'Load': value, 'Temperature': 0, 'Humidity':0})
+        load_writer.writerow({'Date': date.strftime("%d%m%Y"), 'Slot': i, 'Load': value, 'Temperature': 0, 'Humidity':0})
 
     except Exception as e:
       print('Exception', e)
       print(date)
       print(current_url)
+      # error_log_writer.writerow({'Exception': e, 'Date': date, 'URL': current_url})
 
-print(pandas.read_csv('assets/hourly_loaddata.csv'))
+print(pandas.read_csv('assets/hourly_load_data.csv'))
 
 # Execution time
 end_time = time.time()
