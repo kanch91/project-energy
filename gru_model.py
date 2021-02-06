@@ -192,4 +192,4 @@ np.savetxt('results/GRU/test_values.txt', actual_test_result)
 
 end_time = time.time()
 
-print("Total time:", (end_time - start_time) * 100)
+print("Total time:", end_time - start_time)
