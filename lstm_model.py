@@ -157,6 +157,8 @@ print(data_frame)
 # max_mse_index = np.where(np.max(average_mse))
 # # Find the epoch & batch size combination to train the best model
 
+final_batch_size = 2048
+final_epoch = 100
 # Training the best model
 model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
           callbacks=[es])
@@ -189,4 +191,4 @@ np.savetxt('results/LSTM/test_values.txt', actual_test_result)
 
 end_time = time.time()
 
-print("Total time: %.4f", end_time - start_time)
+print("Total time: ", end_time - start_time)
