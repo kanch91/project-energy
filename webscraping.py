@@ -7,7 +7,7 @@ import tabula
 start_time = time.time() # For monitoring the execution time
 
 start_date = datetime.datetime.strptime("01-01-2017", "%d-%m-%Y") # Start date of hourly load data
-end_date = datetime.datetime.strptime("26-11-2020", "%d-%m-%Y") # End date of Hourly load data
+end_date = datetime.datetime.strptime("31-01-2021", "%d-%m-%Y") # End date of Hourly load data
 
 # List of all the dates to scrape the hourly load data
 generated_date = [start_date + datetime.timedelta(days=x) for x in range(0, (end_date-start_date).days)]
