@@ -166,6 +166,7 @@ final_epoch = 100
 # Training the best model
 history = model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
           callbacks=[es])
+print(model.summary())
 
 # Evaluating the result
 test_mse = model.evaluate(X_test, y_test, verbose=1)
