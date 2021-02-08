@@ -43,8 +43,8 @@ hourly_load_matrix = convertTimeSeriesTo2DMatrix(hourly_load, length_of_sequence
 hourly_load_matrix = np.array(hourly_load_matrix)
 shifted_value = hourly_load_matrix.mean()
 hourly_load_matrix = hourly_load_matrix - shifted_value
-# print ("Data  shape: ", hourly_load_matrix.shape)
-# print(hourly_load_matrix)
+print ("Data  shape: ", hourly_load_matrix.shape)
+print(hourly_load_matrix)
 
 # Splitting the dataset into two: 90% for training and 10% for testing
 test_row = int(round(0.9 * hourly_load_matrix.shape[0]))
@@ -56,13 +56,15 @@ np.random.shuffle(train_set)  # Shuffling only the training set randomly
 
 # The Final training set
 X_train = train_set[:, :-1]
-print("X_train", "\n", X_train, "\n")
+print("X_train: ",X_train.shape, "\n", X_train, "\n")
 y_train = train_set[:, -1]  # The last column is the true value to compute the mean-squared-error loss
-print("y_train", "\n", y_train, "\n")
+print("y_train",y_train.shape, "\n", y_train, "\n")
 
 # The Final testing set
 X_test = hourly_load_matrix[test_row:, :-1]
+print("X_test: ",X_test.shape, "\n", X_test, "\n")
 y_test = hourly_load_matrix[test_row:, -1]
+print("y_test: ",y_test.shape,"\n", y_test, "\n")
 
 # The input to GRU layer needs to have the shape of (number of samples, the dimension of each element)
 X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -122,6 +124,8 @@ epoch_list = [final_mse_frame[0].iloc[0], final_mse_frame[0].iloc[1], final_mse_
 batch_size_list = [final_mse_frame[1].iloc[0], final_mse_frame[1].iloc[1], final_mse_frame[1].iloc[2],
                    final_mse_frame[1].iloc[3], final_mse_frame[1].iloc[4]]
 
+result = []
+
 for i in range(5):
     for j in range(3):
         print("Iteration no.:", j, "|| Model:", epoch_list[i], batch_size_list[i])
@@ -157,8 +161,10 @@ print(data_frame)
 # max_mse_index = np.where(np.max(average_mse))
 # # Find the epoch & batch size combination to train the best model
 
+final_batch_size = 1024
+final_epoch = 100
 # Training the best model
-model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
+history = model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
           callbacks=[es])
 
 # Evaluating the result
@@ -180,6 +186,17 @@ plt.ylabel('Electricity load (*1e2)')
 plt.legend(('Predicted', 'Actual'), fontsize='15')
 plt.show()
 fig.savefig('results/GRU/final_output.jpg', bbox_inches='tight')
+
+# Plot of the loss
+loss_fig = plt.figure()
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model Loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+plt.show()
+loss_fig.savefig('results/GRU/final_loss.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
 predicted_test_result = predicted_values + shifted_value
