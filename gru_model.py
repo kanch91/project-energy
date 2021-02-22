@@ -86,7 +86,7 @@ model.add(Dense(units=1, activation='linear'))
 
 # Compiling the model
 model.compile(loss="mse", optimizer="adam")
-es = EarlyStopping(monitor="val_loss", min_delta=0, patience=3, verbose=1, mode="auto", baseline=None,
+es = EarlyStopping(monitor="val_loss", min_delta=0, patience=5, verbose=1, mode="auto", baseline=None,
                    restore_best_weights=True)  # Stops the training when the values don't improve
 
 # Training the model
