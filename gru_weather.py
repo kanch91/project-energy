@@ -31,7 +31,7 @@ x_dewpoint = x_dewpoint.values
 x_humidity = x_humidity.values
 x_windspeed = x_windspeed.values
 x_pressure = (x_pressure.values) / 29.53  # Hg to bar
-y = (y.values) / 1000  # MW to GW
+y = (y.values)/1000 # MW to GW
 
 
 # Visualising the independent variables
@@ -130,12 +130,15 @@ test_mse = model.evaluate(test_X, test_y, verbose=1)
 # print('\nThe Mean-squared-error (MSE) on the test data set is %.6f over %d test samples.' % (test_mse, len(test_y)))
 print("Test MSE:", test_mse)
 
-
+# print("X", test_X.shape, test_X[65])
 # Getting the predicted values
-predicted_values = model.predict(test_X)
-scaler1 = MinMaxScaler(feature_range=(0, 1))
-scaler1.fit(y)
-y_pred = scaler1.inverse_transform(predicted_values)
+predicted_values = model.predict(test_X[0].reshape((1,30,5)))
+# scaler1 = MinMaxScaler(feature_range=(0, 1))
+# scaler1.fit(y)
+# y_pred = scaler1.inverse_transform(predicted_values)
+# print("Y", y_pred)
+print("P", predicted_values, predicted_values.reshape((15,)))
+print("y", test_y[0], test_y[0].shape)
 
 # # read test data
 # x_temperature = dataset['Temperature'].values
@@ -227,9 +230,9 @@ y_pred = scaler1.inverse_transform(predicted_values)
 
 # Plotting the results
 fig = plt.figure()
-plt.plot(test_y)
-plt.plot(y_pred)
-plt.xlabel('Hour')
+plt.plot((test_y[0]))
+plt.plot(predicted_values.reshape((15,)))
+plt.xlabel('Days')
 plt.ylabel('Electricity load (*1e2)')
 plt.legend(('Actual', 'Predicted'), fontsize='15')
 plt.show()
@@ -247,10 +250,11 @@ plt.show()
 loss_fig.savefig('results/GRU_weather/final_loss.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-np.savetxt('results/GRU_weather/predicted_values.txt', y_pred)
+np.savetxt('results/GRU_weather/predicted_values.txt', predicted_values)
 np.savetxt('results/GRU_weather/test_values.txt', test_y)
 
 end_time = time.time()
 
-print("MSE:", mean_squared_error(test_y, y_pred))
+# print("MSE:", mean_squared_error(test_y[65].reshape((1,15)), y_pred))
+print("MSE:", mean_squared_error(test_y[0].reshape((1,15)), predicted_values))
 print("Total time: ", end_time - start_time)
