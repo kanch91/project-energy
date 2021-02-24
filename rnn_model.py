@@ -161,6 +161,7 @@ print(data_frame)
 # max_mse_index = np.where(np.max(average_mse))
 # # Find the epoch & batch size combination to train the best model
 
+#Values taken from the above
 final_batch_size = 1024
 final_epoch = 100
 # Training the best model

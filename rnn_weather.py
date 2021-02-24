@@ -7,6 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN, Activation
 from tensorflow import keras
+from sklearn.metrics import mean_squared_error
 import os
 
 from tensorflow.python.keras.callbacks import EarlyStopping
@@ -252,4 +253,5 @@ np.savetxt('results/RNN_weather/test_values.txt', test_y)
 
 end_time = time.time()
 
+print("MSE:", mean_squared_error(test_y, y_pred))
 print("Total time: ", end_time - start_time)

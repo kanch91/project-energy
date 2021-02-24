@@ -1,0 +1,207 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.holtwinters import SimpleExpSmoothing, Holt, ExponentialSmoothing
+import warnings
+
+warnings.filterwarnings("ignore")
+
+# Pre-processing of the data
+df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1)  # loading raw data from the CSV
+df_raw_array = df_raw.values  # numpy array
+y_test = df_raw[2]/100
+# For daily data
+# for i in range(0, len(df_raw_array)):
+# if (i%24) == 0:
+#     y_test.append(df_raw[2].iloc[i:i+24].sum())
+
+
+y_test = np.array(y_test)
+print("y_test: ", y_test.shape, "\n", y_test, "\n")
+
+
+def single_exponential_smoothing(alpha, y_test):
+    # Accounts only for the level of the series
+
+    # Simple Exponential Smoothing
+    ses_model1 = SimpleExpSmoothing(y_test).fit(smoothing_level=alpha, optimized=True)
+    y_pred = ses_model1.predict(31924).rename(r'$\alpha=%s$' % ses_model1.model.params['smoothing_level'])
+
+    fig = plt.figure(figsize=(60, 8))
+    y_pred[31925:].plot(color='grey', legend=True)
+    ses_model1.fittedvalues.plot(color='grey')
+    plt.title("Single Exponential Smoothing")
+    plt.show()
+    fig.savefig('results/SES/final_output.jpg', bbox_inches='tight')
+
+    # print("Predicted values: ", y_pred, "\n")
+    mse_ses = mean_squared_error(y_test[31923:-1], y_pred)
+
+    # Storing the result in a file: 'load_forecasting_result.txt'
+    predicted_test_result = y_pred
+    np.savetxt('results/SES/predicted_values.txt', predicted_test_result)
+    actual_test_result = y_test
+    np.savetxt('results/SES/test_values.txt', actual_test_result)
+
+    return mse_ses
+
+
+def double_exponential_smoothing(alpha, beta, y_test):
+    # Accounts for level + trend in the data
+
+    des_model = Holt(y_test).fit(smoothing_level=alpha, smoothing_trend=beta, optimized=False)
+    y_pred_des = des_model.predict(31924).rename("Holt's Linear")
+
+    fig = plt.figure(figsize=(60, 8))
+    des_model.fittedvalues.plot(color='grey')
+    y_pred_des.plot(color='grey', legend=True)
+    fig.savefig('results/DES/final_output.jpg', bbox_inches='tight')
+    plt.title("Holt's Method/Double Exponential Smoothing")
+    plt.show()
+
+    # print("Predicted values: ", y_pred_des, "\n")
+    mse_des = mean_squared_error(y_test[31923:-1], y_pred_des)
+
+    np.savetxt('results/DES/predicted_values_model.txt', y_pred_des)
+    actual_test_result = y_test
+    np.savetxt('results/DES/test_values.txt', actual_test_result)
+
+    # Three models with different parameters
+    # #Model 1: Providing the model with the values of hyperparameters (alpha, beta)
+    # des_model1 = Holt(y_test).fit(smoothing_level=alpha, smoothing_trend=beta, optimized=False)
+    # y_pred_des1 = des_model1.predict(31924).rename("Holt's Linear")
+    #
+    # #Model 2: Exponential Model with same alpha & beta
+    # des_model2 = Holt(y_test, exponential=True).fit(smoothing_level=alpha, smoothing_trend=beta, optimized=False)
+    # y_pred_des2 = des_model2.predict(31924).rename("Exponential")
+    #
+    # #Model 3: Optimising the dampening parameter with same alpha & beta
+    # des_model3 = Holt(y_test, damped_trend=True).fit(smoothing_level=alpha, smoothing_trend=beta)
+    # y_pred_des3 = des_model3.predict(31924).rename("Additive damped trend")
+    #
+    # fig = plt.figure(figsize=(60, 8))
+    # des_model1.fittedvalues.plot(color='blue')
+    # y_pred_des1.plot(color='blue', legend=True)
+    # des_model2.fittedvalues.plot(color='red')
+    # y_pred_des2.plot(color='red', legend=True)
+    # des_model3.fittedvalues.plot(color='green')
+    # y_pred_des3.plot(color='green', legend=True)
+    # fig.savefig('results/DES/final_output.jpg', bbox_inches='tight')
+    # plt.title("Holt's Method/Double Exponential Smoothing")
+    # plt.show()
+    #
+    # print("Predicted values (Model 1): ", y_pred_des1, "\n")
+    # print("Predicted values (Model 2): ", y_pred_des2, "\n")
+    # print("Predicted values (Model 3): ", y_pred_des3, "\n")
+    # mse_des1 = mean_squared_error(y_test[31923:-1], y_pred_des1)
+    # mse_des2 = mean_squared_error(y_test[31923:-1], y_pred_des2)
+    # mse_des3 = mean_squared_error(y_test[31923:-1], y_pred_des3)
+    #
+    # np.savetxt('results/DES/predicted_values_model1.txt', y_pred_des1)
+    # np.savetxt('results/DES/predicted_values_model2.txt', y_pred_des2)
+    # np.savetxt('results/DES/predicted_values_model3.txt', y_pred_des3)
+    # actual_test_result = y_test
+    # np.savetxt('results/DES/test_values.txt', actual_test_result)
+    #
+    # return mse_des1, mse_des2, mse_des3
+
+    return mse_des
+
+
+def triple_exponential_smoothing(season, y_test):
+    # Accounts for level + trend + seasonality in the data
+    # Three models with different parameters
+
+    # Model 1: Additive trend + season with box-cox transformation
+    tes_model = ExponentialSmoothing(y_test, seasonal_periods=season, trend='add', seasonal='add').fit(use_boxcox=True)
+    y_pred_tes = tes_model.predict(31924).rename("TES")
+
+    fig = plt.figure(figsize=(60, 8))
+    tes_model.fittedvalues.plot(color='grey')
+    y_pred_tes.plot(color='grey', legend=True)
+    fig.savefig('results/TES/final_output.jpg', bbox_inches='tight')
+    plt.title("Holt-Winters' Method/Triple Exponential Smoothing")
+    plt.show()
+
+    # print("Predicted values: ", y_pred_tes, "\n")
+    mse_tes = mean_squared_error(y_test[31923:-1], y_pred_tes)
+
+    np.savetxt('results/TES/predicted_values_model.txt', y_pred_tes)
+    actual_test_result = y_test
+    np.savetxt('results/TES/test_values.txt', actual_test_result)
+
+    # #Three models with different parameters
+    #
+    # #Model 1: Additive trend + season with box-cox transformation
+    # tes_model1 = ExponentialSmoothing(y_test, seasonal_periods=season, trend='add', seasonal='add').fit(use_boxcox=True)
+    # y_pred_tes1 = tes_model1.predict(31924).rename("Model 1")
+    #
+    # #Model 2: Additive trend + Multiplicative season with box-cox transformation
+    # tes_model2 = ExponentialSmoothing(y_test, seasonal_periods=season, trend='add', seasonal='mul').fit(use_boxcox=True)
+    # y_pred_tes2 = tes_model2.predict(31924).rename("Model 2")
+    #
+    # #Model 3: Damped trend + Additive season with box-cox transformation
+    # tes_model3 = ExponentialSmoothing(y_test, seasonal_periods=season, trend='add', seasonal='add', damped_trend=True).fit(use_boxcox=True)
+    # y_pred_tes3 = tes_model3.predict(31924).rename("Model 3")
+    #
+    # # Model 4: Damped trend + Multiplicative season with box-cox transformation
+    # tes_model4 = ExponentialSmoothing(y_test, seasonal_periods=season, trend='add', seasonal='mul',
+    #                                   damped_trend=True).fit()
+    # y_pred_tes4 = tes_model4.predict(31924).rename("Model 4")
+    #
+    # fig = plt.figure(figsize=(60, 8))
+    # tes_model1.fittedvalues.plot(color='blue')
+    # y_pred_tes1.plot(color='blue', legend=True)
+    # tes_model2.fittedvalues.plot(color='red')
+    # y_pred_tes2.plot(color='red', legend=True)
+    # tes_model3.fittedvalues.plot(color='green')
+    # y_pred_tes3.plot(color='green', legend=True)
+    # tes_model4.fittedvalues.plot(color='yellow')
+    # y_pred_tes4.plot(color='yellow', legend=True)
+    # fig.savefig('results/TES/final_output.jpg', bbox_inches='tight')
+    # plt.title("Holt-Winters' Method/Triple Exponential Smoothing")
+    # plt.show()
+    #
+    # print("Predicted values (Model 1): ", y_pred_tes1, "\n")
+    # print("Predicted values (Model 2): ", y_pred_tes2, "\n")
+    # print("Predicted values (Model 3): ", y_pred_tes3, "\n")
+    # print("Predicted values (Model 4): ", y_pred_tes4, "\n")
+    # mse_tes1 = mean_squared_error(y_test[31923:-1], y_pred_tes1)
+    # mse_tes2 = mean_squared_error(y_test[31923:-1], y_pred_tes2)
+    # mse_tes3 = mean_squared_error(y_test[31923:-1], y_pred_tes3)
+    # mse_tes4 = mean_squared_error(y_test[31923:-1], y_pred_tes4)
+    #
+    # np.savetxt('results/TES/predicted_values_model1.txt', y_pred_tes1)
+    # np.savetxt('results/TES/predicted_values_model2.txt', y_pred_tes2)
+    # np.savetxt('results/TES/predicted_values_model3.txt', y_pred_tes3)
+    # np.savetxt('results/TES/predicted_values_model4.txt', y_pred_tes4)
+    # actual_test_result = y_test
+    # np.savetxt('results/TES/test_values.txt', actual_test_result)
+    #
+    # return mse_tes1, mse_tes2, mse_tes3, mse_tes4
+
+    return mse_tes
+
+
+alpha = 0.8
+beta = 0.2
+season = 24
+y_test = pd.DataFrame(y_test)
+
+print("---------------------------------------------------------")
+
+mse_ses = single_exponential_smoothing(alpha, y_test)
+print("MSE for SES: ", mse_ses, "\n")
+
+print("---------------------------------------------------------")
+
+mse_des = double_exponential_smoothing(alpha, beta, y_test)
+print("MSE for DES: ", mse_des, "\n")
+
+print("---------------------------------------------------------")
+
+mse_tes = triple_exponential_smoothing(season, y_test)
+print("MSE for TES: ", mse_tes, "\n")
+
+print("---------------------------------------------------------")

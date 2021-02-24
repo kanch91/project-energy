@@ -7,6 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, GRU, Activation
 from tensorflow import keras
+from sklearn.metrics import mean_squared_error
 import os
 
 from tensorflow.python.keras.callbacks import EarlyStopping
@@ -135,7 +136,6 @@ predicted_values = model.predict(test_X)
 scaler1 = MinMaxScaler(feature_range=(0, 1))
 scaler1.fit(y)
 y_pred = scaler1.inverse_transform(predicted_values)
-# print(y_pred)
 
 # # read test data
 # x_temperature = dataset['Temperature'].values
@@ -252,4 +252,5 @@ np.savetxt('results/GRU_weather/test_values.txt', test_y)
 
 end_time = time.time()
 
+print("MSE:", mean_squared_error(test_y, y_pred))
 print("Total time: ", end_time - start_time)
