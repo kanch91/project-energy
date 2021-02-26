@@ -7,12 +7,15 @@ from keras.layers.core import Dense, Dropout
 from keras.layers.recurrent import SimpleRNN
 from keras.models import Sequential
 from keras.callbacks import EarlyStopping
+from sklearn.metrics import r2_score, mean_squared_error
 import os
+import warnings
+
+warnings.filterwarnings("ignore")
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 start_time = time.time()
-
 
 # Defining a function to convert a vector of time series into a 2D matrix for faster processing
 def convertTimeSeriesTo2DMatrix(vectorSeries, sequence_length):
@@ -178,6 +181,9 @@ predicted_values = model.predict(X_test)
 num_test_samples = len(predicted_values)
 predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
+print('The MSE value is:', mean_squared_error(predicted_values, y_test, squared=True))
+print('The RMSE value is:', mean_squared_error(predicted_values, y_test, squared=False))
+print('The R-squared value is:', r2_score(predicted_values, y_test))
 
 # Plotting the results
 fig = plt.figure()

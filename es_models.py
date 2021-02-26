@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from statsmodels.tsa.holtwinters import SimpleExpSmoothing, Holt, ExponentialSmoothing
 import warnings
 
@@ -26,25 +26,27 @@ def single_exponential_smoothing(alpha, y_test):
 
     # Simple Exponential Smoothing
     ses_model1 = SimpleExpSmoothing(y_test).fit(smoothing_level=alpha, optimized=True)
-    y_pred = ses_model1.predict(31924).rename(r'$\alpha=%s$' % ses_model1.model.params['smoothing_level'])
+    y_pred_ses = ses_model1.predict(31924).rename(r'$\alpha=%s$' % ses_model1.model.params['smoothing_level'])
 
     fig = plt.figure(figsize=(60, 8))
-    y_pred[31925:].plot(color='grey', legend=True)
+    y_pred_ses[31925:].plot(color='grey', legend=True)
     ses_model1.fittedvalues.plot(color='grey')
     plt.title("Single Exponential Smoothing")
     plt.show()
     fig.savefig('results/SES/final_output.jpg', bbox_inches='tight')
 
     # print("Predicted values: ", y_pred, "\n")
-    mse_ses = mean_squared_error(y_test[31923:-1], y_pred)
+    mse_ses = mean_squared_error(y_test[31923:-1], y_pred_ses)
+    rmse_ses = mean_squared_error(y_pred_ses, y_test[31923:-1], squared = False)
+    r2_ses = r2_score(y_test[31923:-1], y_pred_ses)
 
     # Storing the result in a file: 'load_forecasting_result.txt'
-    predicted_test_result = y_pred
+    predicted_test_result = y_pred_ses
     np.savetxt('results/SES/predicted_values.txt', predicted_test_result)
     actual_test_result = y_test
     np.savetxt('results/SES/test_values.txt', actual_test_result)
 
-    return mse_ses
+    return mse_ses, rmse_ses, r2_ses, y_pred_ses
 
 
 def double_exponential_smoothing(alpha, beta, y_test):
@@ -62,6 +64,8 @@ def double_exponential_smoothing(alpha, beta, y_test):
 
     # print("Predicted values: ", y_pred_des, "\n")
     mse_des = mean_squared_error(y_test[31923:-1], y_pred_des)
+    rmse_des = mean_squared_error(y_pred_des, y_test[31923:-1], squared = False)
+    r2_des = r2_score(y_test[31923:-1], y_pred_des)
 
     np.savetxt('results/DES/predicted_values_model.txt', y_pred_des)
     actual_test_result = y_test
@@ -106,7 +110,7 @@ def double_exponential_smoothing(alpha, beta, y_test):
     #
     # return mse_des1, mse_des2, mse_des3
 
-    return mse_des
+    return mse_des, rmse_des, r2_des, y_pred_des
 
 
 def triple_exponential_smoothing(season, y_test):
@@ -126,6 +130,8 @@ def triple_exponential_smoothing(season, y_test):
 
     # print("Predicted values: ", y_pred_tes, "\n")
     mse_tes = mean_squared_error(y_test[31923:-1], y_pred_tes)
+    rmse_tes = mean_squared_error(y_pred_tes, y_test[31923:-1], squared=False)
+    r2_tes = r2_score(y_test[31923:-1], y_pred_tes)
 
     np.savetxt('results/TES/predicted_values_model.txt', y_pred_tes)
     actual_test_result = y_test
@@ -181,7 +187,7 @@ def triple_exponential_smoothing(season, y_test):
     #
     # return mse_tes1, mse_tes2, mse_tes3, mse_tes4
 
-    return mse_tes
+    return mse_tes, rmse_tes, r2_tes, y_pred_tes
 
 
 alpha = 0.8
@@ -191,17 +197,36 @@ y_test = pd.DataFrame(y_test)
 
 print("---------------------------------------------------------")
 
-mse_ses = single_exponential_smoothing(alpha, y_test)
-print("MSE for SES: ", mse_ses, "\n")
+mse_ses, rmse_ses, r2_ses, y_ses = single_exponential_smoothing(alpha, y_test)
+print("MSE for SES: ", mse_ses,)
+print('RMSE for SES:', rmse_ses)
+print('R-squared for SES:', r2_ses,'\n')
 
 print("---------------------------------------------------------")
 
-mse_des = double_exponential_smoothing(alpha, beta, y_test)
-print("MSE for DES: ", mse_des, "\n")
+mse_des, rmse_des, r2_des, y_des = double_exponential_smoothing(alpha, beta, y_test)
+print("MSE for DES: ", mse_des)
+print('RMSE for DES:', rmse_des)
+print('R-squared for DES:', r2_des,'\n')
 
 print("---------------------------------------------------------")
 
-mse_tes = triple_exponential_smoothing(season, y_test)
-print("MSE for TES: ", mse_tes, "\n")
+mse_tes, rmse_tes, r2_tes, y_tes = triple_exponential_smoothing(season, y_test)
+print("MSE for TES: ", mse_tes)
+print('RMSE for TES:', rmse_tes)
+print('R-squared for TES:', r2_tes,'\n')
 
 print("---------------------------------------------------------")
+
+# Plotting the results
+fig = plt.figure(figsize=(60, 8))
+plt.plot(y_ses, label='SES')
+plt.plot(y_des, label='DES')
+plt.plot(y_tes, label='TES')
+plt.plot(y_test[31923:-1], label='Actual Values')
+plt.legend(loc='upper right')
+plt.xlabel('Hour')
+plt.ylabel('Electricity load')
+plt.title("Predicted Values of various ES methods", fontsize=14)
+plt.show()
+fig.savefig('results/ES_final_output.jpg', bbox_inches='tight')

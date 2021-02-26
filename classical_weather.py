@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 
 
 
@@ -128,22 +128,30 @@ print("---------------------------------------------------------")
 
 n = 5  # Window size
 mse_sma, y_sma = simple_moving_average(n, y_test)
-print("MSE for SMA: ", mse_sma, "\n")
+print("MSE for SMA: ", mse_sma)
+print('RMSE for SMA:', mean_squared_error(y_sma, y_test[n - 1:], squared=False))
+print('R-squared for SMA:', r2_score(y_sma, y_test[n - 1:]))
 
 print("---------------------------------------------------------")
 
 mse_cma, y_cma = cumulative_moving_average(y_test)
-print("MSE for CMA: ", mse_cma, "\n")
+print("MSE for CMA: ", mse_cma)
+print('RMSE for CMA:', mean_squared_error(y_cma, y_test, squared=False))
+print('R-squared for CMA:', r2_score(y_cma, y_test))
 
 print("---------------------------------------------------------")
 
 mse_ema, y_ema = exponential_moving_average(y_test)
-print("MSE for EMA: ", mse_ema, "\n")
+print("MSE for EMA: ", mse_ema)
+print('RMSE for EMA:', mean_squared_error(y_ema, y_test, squared=False))
+print('R-squared for EMA:', r2_score(y_ema, y_test))
 
 print("---------------------------------------------------------")
 
 mse_wma, y_wma = weighted_moving_average(n, y_test)
-print("MSE for WMA: ", mse_wma, "\n")
+print("MSE for WMA: ", mse_wma)
+print('RMSE for WMA:', mean_squared_error(y_wma, y_test[n - 1:], squared=False))
+print('R-squared for WMA:', r2_score(y_wma, y_test[n - 1:]))
 
 print("---------------------------------------------------------")
 

@@ -7,6 +7,7 @@ from keras.layers.core import Dense, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from keras.callbacks import EarlyStopping
+from sklearn.metrics import r2_score, mean_squared_error
 import os
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -53,6 +54,16 @@ train_set = hourly_load_matrix[:test_row, :]
 np.random.shuffle(train_set)  # Shuffling only the training set randomly
 
 # print(train_set, "\n")
+
+# dataset_graph = plt.figure(figsize=(60, 8))
+# plt.plot(hourly_load, label='Load')
+# plt.legend(loc='upper right')
+# plt.title("Dataset", fontsize=14)
+# plt.xlabel('Hours', fontsize=14)
+# plt.ylabel('Values', fontsize=14)
+# plt.legend()
+# plt.show()
+# dataset_graph.savefig('results/LSTM/dataset_graph.jpg', bbox_inches='tight')
 
 # The Final training set
 X_train = train_set[:, :-1]
@@ -178,6 +189,9 @@ predicted_values = model.predict(X_test)
 num_test_samples = len(predicted_values)
 predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
+print('The MSE value is:', mean_squared_error(predicted_values, y_test, squared=True))
+print('The RMSE value is:', mean_squared_error(predicted_values, y_test, squared=False))
+print('The R-squared value is:', r2_score(predicted_values, y_test))
 
 # Plotting the results
 fig = plt.figure()

@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, GRU, Activation
 from tensorflow import keras
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 import os
 
 from tensorflow.python.keras.callbacks import EarlyStopping
@@ -257,4 +257,6 @@ end_time = time.time()
 
 # print("MSE:", mean_squared_error(test_y[65].reshape((1,15)), y_pred))
 print("MSE:", mean_squared_error(test_y[0].reshape((1,15)), predicted_values))
+print("RMSE:", mean_squared_error(test_y[0].reshape((1,15)), predicted_values, squared=False))
+print("R-squared:", r2_score(test_y[0].reshape((1,15)), predicted_values))
 print("Total time: ", end_time - start_time)
