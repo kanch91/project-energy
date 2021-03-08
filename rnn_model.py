@@ -181,9 +181,9 @@ predicted_values = model.predict(X_test)
 num_test_samples = len(predicted_values)
 predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
-print('The MSE value is:', mean_squared_error(predicted_values, y_test, squared=True))
-print('The RMSE value is:', mean_squared_error(predicted_values, y_test, squared=False))
-print('The R-squared value is:', r2_score(predicted_values, y_test))
+print('The MSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=True))
+print('The RMSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=False))
+print('The R-squared value is:', r2_score(predicted_values+shifted_value, y_test+shifted_value))
 
 # Plotting the results
 fig = plt.figure()
