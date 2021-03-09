@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 # Pre-processing of the data
 df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1)  # loading raw data from the CSV
 df_raw_array = df_raw.values  # numpy array
-y_test = df_raw[2]/100
+y_test = df_raw[2]
 # For daily data
 # for i in range(0, len(df_raw_array)):
 # if (i%24) == 0:
@@ -198,7 +198,7 @@ y_test = pd.DataFrame(y_test)
 print("---------------------------------------------------------")
 
 mse_ses, rmse_ses, r2_ses, y_ses = single_exponential_smoothing(alpha, y_test)
-print("MSE for SES: ", mse_ses,)
+print("MSE for SES: ", mse_ses)
 print('RMSE for SES:', rmse_ses)
 print('R-squared for SES:', r2_ses,'\n')
 

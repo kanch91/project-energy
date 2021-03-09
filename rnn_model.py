@@ -92,84 +92,84 @@ model.compile(loss="mse", optimizer="adam")
 es = EarlyStopping(monitor="val_loss", min_delta=0, patience=5, verbose=1, mode="auto", baseline=None,
                    restore_best_weights=True)  # Stops the training when the values don't improve
 
-# Training the model
-model.fit(X_train, y_train, batch_size=512, epochs=50, validation_split=0.05, verbose=1, callbacks=[es])
-test_mse = model.evaluate(X_test, y_test, verbose=1)
-
-# Values of hyperparameters for finding the best values
-epoch = [1, 5, 10, 25, 50, 100]
-batch_size = [4, 12, 16, 32, 64, 256, 512, 1024, 2048]
-
-# Finding the best combination of hyperparameters
-best_mse, final_epoch, final_batch_size = 0, 0, 0
-result = []
-for i in epoch:
-    for j in batch_size:
-        model.fit(X_train, y_train, batch_size=j, epochs=i, validation_split=0.05, verbose=1, callbacks=[es])
-        if model.evaluate(X_test, y_test, verbose=1) < test_mse:
-            test_mse = model.evaluate(X_test, y_test, verbose=1)
-        test_mse = model.evaluate(X_test, y_test, verbose=1)
-        mse_combination = [i, j, test_mse]
-        print("Model w/ Epoch: ", i, "|| Batch Size:", j, "|| MSE: ", test_mse, "\n")
-        result.append(mse_combination)
-
-# Storing all the values in CSV file: 'MSEs.csv'
-np.savetxt("results/RNN/MSEs.csv", result, delimiter=", ", header="Epoch, Batch Size, MSE", fmt='% s')
-
-data_frame = pd.read_csv("results/RNN/MSEs.csv")
-print(data_frame)
-
-# Selecting the top 5 model combinations to find the best performing
-mse_frame = pd.DataFrame(result)
-final_mse_frame = mse_frame.sort_values(by=[2], ascending=True)
-epoch_list = [final_mse_frame[0].iloc[0], final_mse_frame[0].iloc[1], final_mse_frame[0].iloc[2],
-              final_mse_frame[0].iloc[3], final_mse_frame[0].iloc[4]]
-batch_size_list = [final_mse_frame[1].iloc[0], final_mse_frame[1].iloc[1], final_mse_frame[1].iloc[2],
-                   final_mse_frame[1].iloc[3], final_mse_frame[1].iloc[4]]
-
-result = []
-
-for i in range(5):
-    for j in range(3):
-        print("Iteration no.:", j, "|| Model:", epoch_list[i], batch_size_list[i])
-        # model.fit(X_train, y_train, batch_size=batch_size_list[i], epochs=epoch_list[i], validation_split=0.05,
-        #           verbose=1, callbacks=[es])
-        if model.evaluate(X_test, y_test, verbose=1) < test_mse:
-            test_mse = model.evaluate(X_test, y_test, verbose=1)
-            final_epoch = epoch_list[i]
-            final_batch_size = batch_size_list[i]
-        test_mse = model.evaluate(X_test, y_test, verbose=1)
-        print("Model w/ Epoch: ", epoch_list[i], "|| Batch Size: ", batch_size_list[i], "|| MSE: ", test_mse, "\n")
-        mse_combination = [epoch_list[i], batch_size_list[i], test_mse]
-        result.append(mse_combination)
-
-# Storing all the values in CSV file: 'MSEs_top5models.csv'
-np.savetxt("results/RNN/MSEs_top5models.csv", result, delimiter=", ", header="Epoch, Batch Size, MSE", fmt='% s')
-data_frame = pd.read_csv("results/RNN/MSEs_top5models.csv")
-print(data_frame)
-
-# # Finding the best combination
-# counter = 0
-# mse = []
-# temp = []
+# # Training the model
+# model.fit(X_train, y_train, batch_size=512, epochs=50, validation_split=0.05, verbose=1, callbacks=[es])
+# test_mse = model.evaluate(X_test, y_test, verbose=1)
+#
+# # Values of hyperparameters for finding the best values
+# epoch = [1, 5, 10, 25, 50, 100]
+# batch_size = [4, 12, 16, 32, 64, 256, 512, 1024, 2048]
+#
+# # Finding the best combination of hyperparameters
+# best_mse, final_epoch, final_batch_size = 0, 0, 0
+# result = []
+# for i in epoch:
+#     for j in batch_size:
+#         model.fit(X_train, y_train, batch_size=j, epochs=i, validation_split=0.05, verbose=1, callbacks=[es])
+#         if model.evaluate(X_test, y_test, verbose=1) < test_mse:
+#             test_mse = model.evaluate(X_test, y_test, verbose=1)
+#         test_mse = model.evaluate(X_test, y_test, verbose=1)
+#         mse_combination = [i, j, test_mse]
+#         print("Model w/ Epoch: ", i, "|| Batch Size:", j, "|| MSE: ", test_mse, "\n")
+#         result.append(mse_combination)
+#
+# # Storing all the values in CSV file: 'MSEs.csv'
+# np.savetxt("results/RNN/MSEs.csv", result, delimiter=", ", header="Epoch, Batch Size, MSE", fmt='% s')
+#
+# data_frame = pd.read_csv("results/RNN/MSEs.csv")
+# print(data_frame)
+#
+# # Selecting the top 5 model combinations to find the best performing
 # mse_frame = pd.DataFrame(result)
+# final_mse_frame = mse_frame.sort_values(by=[2], ascending=True)
+# epoch_list = [final_mse_frame[0].iloc[0], final_mse_frame[0].iloc[1], final_mse_frame[0].iloc[2],
+#               final_mse_frame[0].iloc[3], final_mse_frame[0].iloc[4]]
+# batch_size_list = [final_mse_frame[1].iloc[0], final_mse_frame[1].iloc[1], final_mse_frame[1].iloc[2],
+#                    final_mse_frame[1].iloc[3], final_mse_frame[1].iloc[4]]
+#
+# result = []
+#
 # for i in range(5):
 #     for j in range(3):
-#         temp.append(mse_frame[2].iloc[counter])
-#         counter = counter+1
-#     mse.append(temp)
+#         print("Iteration no.:", j, "|| Model:", epoch_list[i], batch_size_list[i])
+#         # model.fit(X_train, y_train, batch_size=batch_size_list[i], epochs=epoch_list[i], validation_split=0.05,
+#         #           verbose=1, callbacks=[es])
+#         if model.evaluate(X_test, y_test, verbose=1) < test_mse:
+#             test_mse = model.evaluate(X_test, y_test, verbose=1)
+#             final_epoch = epoch_list[i]
+#             final_batch_size = batch_size_list[i]
+#         test_mse = model.evaluate(X_test, y_test, verbose=1)
+#         print("Model w/ Epoch: ", epoch_list[i], "|| Batch Size: ", batch_size_list[i], "|| MSE: ", test_mse, "\n")
+#         mse_combination = [epoch_list[i], batch_size_list[i], test_mse]
+#         result.append(mse_combination)
 #
-# average_mse = np.array(temp)
-# average_mse = np.sum(average_mse, axis=1)/3
-# max_mse_index = np.where(np.max(average_mse))
-# # Find the epoch & batch size combination to train the best model
+# # Storing all the values in CSV file: 'MSEs_top5models.csv'
+# np.savetxt("results/RNN/MSEs_top5models.csv", result, delimiter=", ", header="Epoch, Batch Size, MSE", fmt='% s')
+# data_frame = pd.read_csv("results/RNN/MSEs_top5models.csv")
+# print(data_frame)
+#
+# # # Finding the best combination
+# # counter = 0
+# # mse = []
+# # temp = []
+# # mse_frame = pd.DataFrame(result)
+# # for i in range(5):
+# #     for j in range(3):
+# #         temp.append(mse_frame[2].iloc[counter])
+# #         counter = counter+1
+# #     mse.append(temp)
+# #
+# # average_mse = np.array(temp)
+# # average_mse = np.sum(average_mse, axis=1)/3
+# # max_mse_index = np.where(np.max(average_mse))
+# # # Find the epoch & batch size combination to train the best model
 
-#Values taken from the above
+# Values taken from the above
 final_batch_size = 1024
 final_epoch = 100
 # Training the best model
 history = model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
-          callbacks=[es])
+                    callbacks=[es])
 print(model.summary())
 
 # Evaluating the result
@@ -181,16 +181,18 @@ predicted_values = model.predict(X_test)
 num_test_samples = len(predicted_values)
 predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
-print('The MSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=True))
-print('The RMSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=False))
-print('The R-squared value is:', r2_score(predicted_values+shifted_value, y_test+shifted_value))
+print('The MSE value is:',
+      mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=True))
+print('The RMSE value is:',
+      mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=False))
+print('The R-squared value is:', r2_score(predicted_values + shifted_value, y_test + shifted_value))
 
 # Plotting the results
 fig = plt.figure()
-plt.plot(predicted_values + shifted_value)
-plt.plot(y_test + shifted_value)
+plt.plot((predicted_values + shifted_value) * 100)
+plt.plot((y_test + shifted_value) * 100)
 plt.xlabel('Hour')
-plt.ylabel('Electricity load (*1e2)')
+plt.ylabel('Electricity load')
 plt.legend(('Predicted', 'Actual'), fontsize='15')
 plt.show()
 fig.savefig('results/RNN/final_output.jpg', bbox_inches='tight')
@@ -207,9 +209,9 @@ plt.show()
 loss_fig.savefig('results/RNN/final_loss.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-predicted_test_result = predicted_values + shifted_value
+predicted_test_result = (predicted_values + shifted_value) * 100
 np.savetxt('results/RNN/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test + shifted_value
+actual_test_result = (y_test + shifted_value) * 100
 np.savetxt('results/RNN/test_values.txt', actual_test_result)
 
 # loss = 100 * np.mean(abs((actual_test_result - predicted_test_result) / predicted_test_result), axis=-1)

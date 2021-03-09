@@ -189,16 +189,18 @@ predicted_values = model.predict(X_test)
 num_test_samples = len(predicted_values)
 predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
-print('The MSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=True))
-print('The RMSE value is:', mean_squared_error(predicted_values+shifted_value, y_test+shifted_value, squared=False))
-print('The R-squared value is:', r2_score(predicted_values+shifted_value, y_test+shifted_value))
+print('The MSE value is:',
+      mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=True))
+print('The RMSE value is:',
+      mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=False))
+print('The R-squared value is:', r2_score(predicted_values + shifted_value, y_test + shifted_value))
 
 # Plotting the results
 fig = plt.figure()
-plt.plot(y_test + shifted_value)
-plt.plot(predicted_values + shifted_value)
+plt.plot((y_test + shifted_value) * 100)
+plt.plot((predicted_values + shifted_value) * 100)
 plt.xlabel('Hour')
-plt.ylabel('Electricity load (*1e2)')
+plt.ylabel('Electricity load')
 plt.legend(('Actual', 'Predicted'), fontsize='15')
 plt.show()
 fig.savefig('results/LSTM/final_output.jpg', bbox_inches='tight')
@@ -215,9 +217,9 @@ plt.show()
 loss_fig.savefig('results/LSTM/final_loss.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-predicted_test_result = predicted_values + shifted_value
+predicted_test_result = (predicted_values + shifted_value) * 100
 np.savetxt('results/LSTM/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test + shifted_value
+actual_test_result = (y_test + shifted_value) * 100
 np.savetxt('results/LSTM/test_values.txt', actual_test_result)
 
 end_time = time.time()
