@@ -9,8 +9,11 @@ from tensorflow.keras.layers import Dense, GRU, Activation
 from tensorflow import keras
 from sklearn.metrics import mean_squared_error, r2_score
 import os
-
 from tensorflow.python.keras.callbacks import EarlyStopping
+import warnings
+from keras.models import load_model
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -129,6 +132,9 @@ print(model.summary())
 test_mse = model.evaluate(test_X, test_y, verbose=1)
 # print('\nThe Mean-squared-error (MSE) on the test data set is %.6f over %d test samples.' % (test_mse, len(test_y)))
 print("Test MSE:", test_mse)
+
+model.save('assets/multivariate/gru.tf', overwrite=True, include_optimizer=True)
+# loaded_model = load_model('path')
 
 # print("X", test_X.shape, test_X[65])
 # Getting the predicted values

@@ -9,6 +9,10 @@ from keras.models import Sequential
 from keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, mean_squared_error
 import os
+import warnings
+from keras.models import load_model
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -179,6 +183,9 @@ final_epoch = 100
 history = model.fit(X_train, y_train, batch_size=final_batch_size, epochs=final_epoch, validation_split=0.05, verbose=1,
           callbacks=[es])
 print(model.summary())
+
+model.save('assets/univariate/lstm.tf', overwrite=True, include_optimizer=True)
+# loaded_model = load_model('path')
 
 # Evaluating the result
 test_mse = model.evaluate(X_test, y_test, verbose=1)

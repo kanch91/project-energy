@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
 
-
-
 # Pre-processing of the data
 df_raw = pd.read_csv('assets/hourly_load&weather_data.csv', header=None, skiprows=1)  # loading raw data from the CSV
 y_test = df_raw[1].values/1000  # numpy array
