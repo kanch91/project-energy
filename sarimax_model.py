@@ -75,7 +75,8 @@ y_test = df_raw[2]/100
 #                                                              SARIMAX_model[AIC.index(min(AIC))][1]))
 
 # SARIMAX model
-model = stats.tsa.arima.ARIMA(y_test[0:31925], order=[1, 0, 1], enforce_stationarity=False,
+model = stats.tsa.statespace.SARIMAX(y_test[0:31925], order=[1, 0, 1],
+                                   seasonal_order=[1,1,1,24], enforce_stationarity=False,
                                    enforce_invertibility=False)
 
 
@@ -97,14 +98,14 @@ fig = plt.figure(figsize=(60, 8))
 plt.plot(y_test[31925:]*100, label='Actual')
 plt.plot(y_pred*100, label='Predicted')
 plt.legend(loc='upper right')
-plt.title("ARIMA", fontsize=14)
+plt.title("SARIMAX", fontsize=14)
 plt.xlabel('Hour')
 plt.ylabel('Electricity load')
 plt.show()
-fig.savefig('results/ARIMA/final_output.jpg', bbox_inches='tight')
+fig.savefig('results/SARIMAX/final_output.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
 predicted_test_result = y_pred * 100
-np.savetxt('results/ARIMA/predicted_values.txt', predicted_test_result)
+np.savetxt('results/SARIMAX/predicted_values.txt', predicted_test_result)
 actual_test_result = y_test[31925:] * 100
-np.savetxt('results/ARIMA/test_values.txt', actual_test_result)
+np.savetxt('results/SARIMAX/test_values.txt', actual_test_result)

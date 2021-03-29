@@ -14,10 +14,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 warnings.filterwarnings("ignore")
 
 # Pre-processing of the data
-df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1)  # loading raw data from the CSV
+df_raw = pd.read_csv('assets/hourly_load&weather_data.csv', header=None, skiprows=1)  # loading raw data from the CSV
 df_raw_array = df_raw.values  # numpy array
 y_train = df_raw[2]/100
-y_train = y_train[0:31925]
+y_train = y_train[0:328]
 y_test = df_raw[2]/100
 # y_test = y_test[31925:]
 
@@ -47,7 +47,7 @@ y_test = df_raw[2]/100
 # fig = plot_pacf(y_test.iloc[13:],lags=40,ax=ax2)
 #
 
-# For finding the best set of values by using a brute-force approach
+# # For finding the best set of values by using a brute-force approach
 # p = d = q = range(0, 2)
 #
 # # p, q, d values
@@ -75,7 +75,8 @@ y_test = df_raw[2]/100
 #                                                              SARIMAX_model[AIC.index(min(AIC))][1]))
 
 # SARIMAX model
-model = stats.tsa.arima.ARIMA(y_test[0:31925], order=[1, 0, 1], enforce_stationarity=False,
+model = stats.tsa.statespace.SARIMAX(y_test[0:327], order=[1, 1, 1],
+                                   seasonal_order=[0,0,0,24], enforce_stationarity=False,
                                    enforce_invertibility=False)
 
 
@@ -83,28 +84,28 @@ results = model.fit()
 print(results.summary())
 
 
-y_pred = results.predict(start=31925, end=35471, dynamic=True)
+y_pred = results.predict(start=328, end=364, dynamic=True)
 print(y_pred)
 
 
-mse = mean_squared_error(y_test[31925:]*100, y_pred*100)
+mse = mean_squared_error(y_test[327:]*100, y_pred*100)
 print("MSE: ", mse)
-print('RMSE:', mean_squared_error(y_test[31925:] * 100, y_pred*100, squared=False))
-print('R-squared:', r2_score(y_test[31925:], y_pred))
+print('RMSE:', mean_squared_error(y_test[327:] * 100, y_pred*100, squared=False))
+print('R-squared:', r2_score(y_test[327:], y_pred))
 
 # Plotting the results
 fig = plt.figure(figsize=(60, 8))
-plt.plot(y_test[31925:]*100, label='Actual')
+plt.plot(y_test[327:]*100, label='Actual')
 plt.plot(y_pred*100, label='Predicted')
 plt.legend(loc='upper right')
-plt.title("ARIMA", fontsize=14)
+plt.title("SARIMAX", fontsize=14)
 plt.xlabel('Hour')
 plt.ylabel('Electricity load')
 plt.show()
-fig.savefig('results/ARIMA/final_output.jpg', bbox_inches='tight')
+fig.savefig('results/SARIMAX_weather/final_output.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
 predicted_test_result = y_pred * 100
-np.savetxt('results/ARIMA/predicted_values.txt', predicted_test_result)
+np.savetxt('results/SARIMAX_weather/predicted_values.txt', predicted_test_result)
 actual_test_result = y_test[31925:] * 100
-np.savetxt('results/ARIMA/test_values.txt', actual_test_result)
+np.savetxt('results/SARIMAX_weather/test_values.txt', actual_test_result)
