@@ -16,9 +16,9 @@ warnings.filterwarnings("ignore")
 # Pre-processing of the data
 df_raw = pd.read_csv('assets/hourly_load&weather_data.csv', header=None, skiprows=1)  # loading raw data from the CSV
 df_raw_array = df_raw.values  # numpy array
-y_train = df_raw[2]/100
-y_train = y_train[0:328]
-y_test = df_raw[2]/100
+# y_train = df_raw[2]/100
+# y_train = y_train[0:328]
+y_test = df_raw[1]/100000
 # y_test = y_test[31925:]
 
 # For daily data
@@ -48,35 +48,31 @@ y_test = df_raw[2]/100
 #
 
 # # For finding the best set of values by using a brute-force approach
-# p = d = q = range(0, 2)
+# p = d = q = range(0, 10)
 #
 # # p, q, d values
 # pdq = list(iter.product(p, d, q))
 #
-# # Seasonal P, Q and D values
-# seasonal_PQD = [(x[0], x[1], x[2], 24) for x in list(iter.product(p, d, q))]
-#
 # i = 0
 # AIC = []
-# SARIMAX_model = []
+# ARIMA_model = []
 # for param in pdq:
-#     for param_seasonal in seasonal_PQD:
-#         i += 1
-#         model = stats.tsa.statespace.SARIMAX(y_test, order=param, seasonal_order=param_seasonal,
-#                                            enforce_stationarity=False, enforce_invertibility=False)
+#     i += 1
+#     model = stats.tsa.arima.ARIMA(y_test, order=param,
+#                                        enforce_stationarity=False, enforce_invertibility=False)
 #
-#         results = model.fit()
+#     results = model.fit()
 #
-#         print('SARIMAX{}x{} - AIC:{}'.format(param, param_seasonal, results.aic), end='\r')
-#         AIC.append(results.aic)
-#         SARIMAX_model.append([param, param_seasonal])
+#     print('ARIMA: ', param, '\nAIC:',results.aic,'\n')
+#     AIC.append(results.aic)
+#     ARIMA_model.append([param])
 #
-# print('The smallest AIC is {} for model SARIMAX{}x{}'.format(min(AIC), SARIMAX_model[AIC.index(min(AIC))][0],
-#                                                              SARIMAX_model[AIC.index(min(AIC))][1]))
+# print('The smallest AIC is {} for model ARIMA{}'.format(min(AIC), ARIMA_model[AIC.index(min(AIC))][0],
+#                                                              ARIMA_model[AIC.index(min(AIC))][0]))
 
 # ARIMA model
 
-model = stats.tsa.arima.ARIMA(y_test[0:327], order=[1,1,1], enforce_stationarity=False, enforce_invertibility=False)
+model = stats.tsa.arima.ARIMA(y_test[0:327], order=[1,0,0], enforce_stationarity=False, enforce_invertibility=False)
 
 
 results = model.fit()
@@ -85,6 +81,7 @@ print(results.summary())
 
 y_pred = results.predict(start=328, end=364, dynamic=True)
 print(y_pred)
+print(y_test[327:])
 
 
 mse = mean_squared_error(y_test[327:]*100, y_pred*100)
@@ -94,8 +91,8 @@ print('R-squared:', r2_score(y_test[327:], y_pred))
 
 # Plotting the results
 fig = plt.figure(figsize=(60, 8))
-plt.plot(y_test[327:]*100, label='Actual')
-plt.plot(y_pred*100, label='Predicted')
+plt.plot(y_test[327:]*100000, label='Actual')
+plt.plot(y_pred*100000, label='Predicted')
 plt.legend(loc='upper right')
 plt.title("ARIMA", fontsize=14)
 plt.xlabel('Hour')
@@ -104,7 +101,7 @@ plt.show()
 fig.savefig('results/ARIMA_weather/final_output.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-predicted_test_result = y_pred * 100
+predicted_test_result = y_pred * 100000
 np.savetxt('results/ARIMA_weather/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test[31925:] * 100
+actual_test_result = y_test[31925:] * 100000
 np.savetxt('results/ARIMA_weather/test_values.txt', actual_test_result)

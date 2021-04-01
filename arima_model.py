@@ -47,35 +47,31 @@ y_test = df_raw[2]/100
 # fig = plot_pacf(y_test.iloc[13:],lags=40,ax=ax2)
 #
 
-# For finding the best set of values by using a brute-force approach
-# p = d = q = range(0, 2)
+# # For finding the best set of values by using a brute-force approach
+# p = d = q = range(0, 4)
 #
 # # p, q, d values
 # pdq = list(iter.product(p, d, q))
 #
-# # Seasonal P, Q and D values
-# seasonal_PQD = [(x[0], x[1], x[2], 24) for x in list(iter.product(p, d, q))]
-#
 # i = 0
 # AIC = []
-# SARIMAX_model = []
+# ARIMA_model = []
 # for param in pdq:
-#     for param_seasonal in seasonal_PQD:
-#         i += 1
-#         model = stats.tsa.statespace.SARIMAX(y_test, order=param, seasonal_order=param_seasonal,
-#                                            enforce_stationarity=False, enforce_invertibility=False)
+#     i += 1
+#     model = stats.tsa.arima.ARIMA(y_test, order=param,
+#                                        enforce_stationarity=True, enforce_invertibility=True)
 #
-#         results = model.fit()
+#     results = model.fit()
 #
-#         print('SARIMAX{}x{} - AIC:{}'.format(param, param_seasonal, results.aic), end='\r')
-#         AIC.append(results.aic)
-#         SARIMAX_model.append([param, param_seasonal])
+#     print('ARIMA: ', param, '\nAIC:',results.aic,'\n')
+#     AIC.append(results.aic)
+#     ARIMA_model.append([param])
 #
-# print('The smallest AIC is {} for model SARIMAX{}x{}'.format(min(AIC), SARIMAX_model[AIC.index(min(AIC))][0],
-#                                                              SARIMAX_model[AIC.index(min(AIC))][1]))
+# print('The smallest AIC is {} for model ARIMA{}'.format(min(AIC), ARIMA_model[AIC.index(min(AIC))][0],
+#                                                              ARIMA_model[AIC.index(min(AIC))][0]))
 
-# SARIMAX model
-model = stats.tsa.arima.ARIMA(y_test[0:31925], order=[1, 0, 1], enforce_stationarity=False,
+# ARIMA model
+model = stats.tsa.arima.ARIMA(y_test[0:31925], order=[3, 1, 3], enforce_stationarity=False,
                                    enforce_invertibility=False)
 
 
