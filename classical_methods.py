@@ -38,7 +38,7 @@ print("y_test: ", y_test.shape, "\n", y_test, "\n")
 def simple_moving_average(n, y_test):
     # Getting the predicted values for SMA
     y_pred = pd.Series(y_test).rolling(window=n).mean().iloc[n - 1:].values
-    print("Predicted values: ", y_pred, "\n")
+    # print("Predicted values: ", y_pred, "\n")
     mse_sma = mean_squared_error(y_test[n - 1:] * 100, y_pred * 100)
 
     # Plotting the results
@@ -70,7 +70,7 @@ def weighted_moving_average(n, y_test):
         wma = (temp.sum()) / (total.sum())
         y_pred = np.append(y_pred, wma)
 
-    print("Predicted values: ", y_pred, "\n")
+    # print("Predicted values: ", y_pred, "\n")
     mse_wma = mean_squared_error(y_test[n - 1:] * 100, y_pred * 100)
 
     # Plotting the results
@@ -97,7 +97,7 @@ def cumulative_moving_average(y_test):
     df = pd.DataFrame(y_test)
     y_pred = df.expanding().mean()
 
-    print("Predicted values: ", y_pred, "\n")
+    # print("Predicted values: ", y_pred, "\n")
     mse_cma = mean_squared_error(y_test * 100, y_pred * 100)
 
     # Plotting the results
@@ -125,7 +125,7 @@ def exponential_moving_average(y_test):
     smoothing_factor = 0.5
     y_pred = df.ewm(alpha=smoothing_factor, adjust=False).mean()
 
-    print("Predicted values: ", y_pred, "\n")
+    # print("Predicted values: ", y_pred, "\n")
     mse_ema = mean_squared_error(y_test * 100, y_pred * 100)
 
     # Plotting the results
@@ -155,20 +155,7 @@ mse_sma, y_sma = simple_moving_average(n, y_test)
 print("MSE for SMA: ", mse_sma)
 print('RMSE for SMA:', mean_squared_error(y_sma * 100, y_test[n - 1:] * 100, squared=False))
 print('R-squared for SMA:', r2_score(y_sma, y_test[n - 1:]))
-
-print("---------------------------------------------------------")
-
-mse_cma, y_cma = cumulative_moving_average(y_test)
-print("MSE for CMA: ", mse_cma)
-print('RMSE for CMA:', mean_squared_error(y_cma * 100, y_test * 100, squared=False))
-print('R-squared for CMA:', r2_score(y_cma, y_test))
-
-print("---------------------------------------------------------")
-
-mse_ema, y_ema = exponential_moving_average(y_test)
-print("MSE for EMA: ", mse_ema)
-print('RMSE for EMA:', mean_squared_error(y_ema * 100, y_test * 100, squared=False))
-print('R-squared for EMA:', r2_score(y_ema, y_test))
+print('MAPE for SMA:', np.mean(np.abs((y_test[n-1:] - y_sma) / y_test[n-1:])) * 100)
 
 print("---------------------------------------------------------")
 
@@ -176,6 +163,23 @@ mse_wma, y_wma = weighted_moving_average(n, y_test)
 print("MSE for WMA: ", mse_wma)
 print('RMSE for WMA:', mean_squared_error(y_wma * 100, y_test[n - 1:] * 100, squared=False))
 print('R-squared for WMA:', r2_score(y_wma, y_test[n - 1:]))
+print('MAPE for WMA:', np.mean(np.abs((y_test[n-1:] - y_wma) / y_test[n-1:])) * 100)
+
+print("---------------------------------------------------------")
+y = np.reshape(y_test, (3545,1))
+mse_cma, y_cma = cumulative_moving_average(y_test)
+print("MSE for CMA: ", mse_cma)
+print('RMSE for CMA:', mean_squared_error(y_cma * 100, y * 100, squared=False))
+print('R-squared for CMA:', r2_score(y_cma, y_test))
+print('MAPE for CMA:', np.mean(np.abs((y - y_cma) / y)) * 100)
+
+print("---------------------------------------------------------")
+
+mse_ema, y_ema = exponential_moving_average(y_test)
+print("MSE for EMA: ", mse_ema)
+print('RMSE for EMA:', mean_squared_error(y_ema * 100, y_test * 100, squared=False))
+print('R-squared for EMA:', r2_score(y_ema, y_test))
+print('MAPE for EMA:', np.mean(np.abs((y - y_ema) / y)) * 100)
 
 print("---------------------------------------------------------")
 

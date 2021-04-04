@@ -194,27 +194,30 @@ alpha = 0.8
 beta = 0.2
 season = 24
 y_test = pd.DataFrame(y_test)
-
+y = np.reshape(np.array(y_test[31923:-1]), (3548,))
 print("---------------------------------------------------------")
 
 mse_ses, rmse_ses, r2_ses, y_ses = single_exponential_smoothing(alpha, y_test)
 print("MSE for SES: ", mse_ses)
 print('RMSE for SES:', rmse_ses)
-print('R-squared for SES:', r2_ses,'\n')
+print('R-squared for SES:', r2_ses)
+print('MAPE for SES:', np.mean(np.abs((y - np.array(y_ses)) / y)) * 100,'\n')
 
 print("---------------------------------------------------------")
 
 mse_des, rmse_des, r2_des, y_des = double_exponential_smoothing(alpha, beta, y_test)
 print("MSE for DES: ", mse_des)
 print('RMSE for DES:', rmse_des)
-print('R-squared for DES:', r2_des,'\n')
+print('R-squared for DES:', r2_des)
+print('MAPE for DES:', np.mean(np.abs((y - np.array(y_des)) / y)) * 100,'\n')
 
 print("---------------------------------------------------------")
 
 mse_tes, rmse_tes, r2_tes, y_tes = triple_exponential_smoothing(season, y_test)
 print("MSE for TES: ", mse_tes)
 print('RMSE for TES:', rmse_tes)
-print('R-squared for TES:', r2_tes,'\n')
+print('R-squared for TES:', r2_tes)
+print('MAPE for TES:', np.mean(np.abs((y - np.array(y_tes)) / y)) * 100,'\n')
 
 print("---------------------------------------------------------")
 

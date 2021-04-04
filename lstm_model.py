@@ -201,6 +201,7 @@ print('The MSE value is:',
 print('The RMSE value is:',
       mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=False))
 print('The R-squared value is:', r2_score(predicted_values + shifted_value, y_test + shifted_value))
+print('The MAPE value is:', np.mean(np.abs(((y_test+shifted_value) - np.reshape(predicted_values+shifted_value, (3545,))) / (y_test+shifted_value))) * 100,'\n')
 
 # Plotting the results
 fig = plt.figure()
