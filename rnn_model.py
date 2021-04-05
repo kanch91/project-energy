@@ -7,7 +7,7 @@ from keras.layers.core import Dense, Dropout
 from keras.layers.recurrent import SimpleRNN
 from keras.models import Sequential
 from keras.callbacks import EarlyStopping
-from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import os
 import warnings
 from keras.models import load_model
@@ -189,6 +189,8 @@ predicted_values = np.reshape(predicted_values, (num_test_samples, 1))
 # print(predicted_values)
 print('The MSE value is:',
       mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=True))
+print('The MAE value is:',
+      mean_absolute_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100))
 print('The RMSE value is:',
       mean_squared_error((predicted_values + shifted_value) * 100, (y_test + shifted_value) * 100, squared=False))
 print('The R-squared value is:', r2_score(predicted_values + shifted_value, y_test + shifted_value))
@@ -198,6 +200,7 @@ print('The MAPE value is:', np.mean(np.abs(((y_test+shifted_value) - np.reshape(
 fig = plt.figure()
 plt.plot((predicted_values + shifted_value) * 100)
 plt.plot((y_test + shifted_value) * 100)
+plt.title("RNN")
 plt.xlabel('Hour')
 plt.ylabel('Electricity load')
 plt.legend(('Predicted', 'Actual'), fontsize='15')

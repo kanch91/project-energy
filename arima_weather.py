@@ -48,7 +48,7 @@ y_test = df_raw[1]/100000
 #
 
 # # For finding the best set of values by using a brute-force approach
-# p = d = q = range(0, 10)
+# p = d = q = range(0, 2)
 #
 # # p, q, d values
 # pdq = list(iter.product(p, d, q))
@@ -72,26 +72,27 @@ y_test = df_raw[1]/100000
 
 # ARIMA model
 
-model = stats.tsa.arima.ARIMA(y_test[0:327], order=[1,0,0], enforce_stationarity=False, enforce_invertibility=False)
+model = stats.tsa.arima.ARIMA(y_test[0:354], order=[1,0,0], enforce_stationarity=False, enforce_invertibility=False)
 
 
 results = model.fit()
 print(results.summary())
 
 
-y_pred = results.predict(start=328, end=364, dynamic=True)
-print(y_pred)
-print(y_test[327:])
+y_pred = results.predict(start=354, end=363, dynamic=True)
+# print(y_pred)
+# print(y_test[354:])
 
 
-mse = mean_squared_error(y_test[327:]*100, y_pred*100)
+mse = mean_squared_error(y_test[354:]*100000, y_pred*100000)
 print("MSE: ", mse)
-print('RMSE:', mean_squared_error(y_test[327:] * 100, y_pred*100, squared=False))
-print('R-squared:', r2_score(y_test[327:], y_pred))
+print('RMSE:', mean_squared_error(y_test[354:] * 100000, y_pred*100000, squared=False))
+print('R-squared:', r2_score(y_test[354:], y_pred))
+print('MAPE:', np.mean(np.abs(y_test[354:] - y_pred) / (y_test[354:])) * 100,'\n')
 
 # Plotting the results
 fig = plt.figure(figsize=(60, 8))
-plt.plot(y_test[327:]*100000, label='Actual')
+plt.plot(y_test[354:]*100000, label='Actual')
 plt.plot(y_pred*100000, label='Predicted')
 plt.legend(loc='upper right')
 plt.title("ARIMA", fontsize=14)
@@ -103,5 +104,5 @@ fig.savefig('results/ARIMA_weather/final_output.jpg', bbox_inches='tight')
 # Storing the result in a file: 'load_forecasting_result.txt'
 predicted_test_result = y_pred * 100000
 np.savetxt('results/ARIMA_weather/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test[31925:] * 100000
+actual_test_result = y_test[354:] * 100000
 np.savetxt('results/ARIMA_weather/test_values.txt', actual_test_result)

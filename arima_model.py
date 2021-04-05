@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1)  # loading raw data from the CSV
 df_raw_array = df_raw.values  # numpy array
 y_train = df_raw[2]/100
-y_train = y_train[0:31925]
+y_train = y_train[0:35135]
 y_test = df_raw[2]/100
 # y_test = y_test[31925:]
 
@@ -71,7 +71,7 @@ y_test = df_raw[2]/100
 #                                                              ARIMA_model[AIC.index(min(AIC))][0]))
 
 # ARIMA model
-model = stats.tsa.arima.ARIMA(y_test[0:31925], order=[3, 1, 3], enforce_stationarity=False,
+model = stats.tsa.arima.ARIMA(y_test[0:35135], order=[3, 1, 3], enforce_stationarity=False,
                                    enforce_invertibility=False)
 
 
@@ -79,18 +79,19 @@ results = model.fit()
 print(results.summary())
 
 
-y_pred = results.predict(start=31925, end=35471, dynamic=True)
-print(y_pred)
+y_pred = results.predict(start=35135, end=35471, dynamic=True)
+print(y_pred, y_test[35135:])
 
 
-mse = mean_squared_error(y_test[31925:]*100, y_pred*100)
+mse = mean_squared_error(y_test[35135:]*100, y_pred*100)
 print("MSE: ", mse)
-print('RMSE:', mean_squared_error(y_test[31925:] * 100, y_pred*100, squared=False))
-print('R-squared:', r2_score(y_test[31925:], y_pred))
+print('RMSE:', mean_squared_error(y_test[35135:] * 100, y_pred*100, squared=False))
+print('R-squared:', r2_score(y_test[35135:], y_pred))
+print('MAPE:', np.mean(np.abs(y_test[35135:] - y_pred) / (y_test[35135:])) * 100,'\n')
 
 # Plotting the results
 fig = plt.figure(figsize=(60, 8))
-plt.plot(y_test[31925:]*100, label='Actual')
+plt.plot(y_test[35135:]*100, label='Actual')
 plt.plot(y_pred*100, label='Predicted')
 plt.legend(loc='upper right')
 plt.title("ARIMA", fontsize=14)
@@ -102,5 +103,5 @@ fig.savefig('results/ARIMA/final_output.jpg', bbox_inches='tight')
 # Storing the result in a file: 'load_forecasting_result.txt'
 predicted_test_result = y_pred * 100
 np.savetxt('results/ARIMA/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test[31925:] * 100
+actual_test_result = y_test[35135:] * 100
 np.savetxt('results/ARIMA/test_values.txt', actual_test_result)

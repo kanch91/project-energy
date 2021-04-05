@@ -207,6 +207,7 @@ print('The MAPE value is:', np.mean(np.abs(((y_test+shifted_value) - np.reshape(
 fig = plt.figure()
 plt.plot((y_test + shifted_value) * 100)
 plt.plot((predicted_values + shifted_value) * 100)
+plt.title("LSTM")
 plt.xlabel('Hour')
 plt.ylabel('Electricity load')
 plt.legend(('Actual', 'Predicted'), fontsize='15')

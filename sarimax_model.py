@@ -1,6 +1,7 @@
 import warnings
 import pandas as pd
 import numpy as np
+import math
 import itertools as iter
 import statsmodels.api as stats
 import matplotlib.pyplot as plt
@@ -17,7 +18,8 @@ warnings.filterwarnings("ignore")
 df_raw = pd.read_csv('assets/hourly_loaddata.csv', header=None, skiprows=1)  # loading raw data from the CSV
 df_raw_array = df_raw.values  # numpy array
 y_train = df_raw[2]/100
-y_train = y_train[0:31925]
+y_train = y_train[0:35135]
+# y_train = y_train[0:8760]
 y_test = df_raw[2]/100
 # y_test = y_test[31925:]
 
@@ -54,7 +56,7 @@ y_test = df_raw[2]/100
 # pdq = list(iter.product(p, d, q))
 #
 # # Seasonal P, Q and D values
-# seasonal_PQD = [(x[0], x[1], x[2], 2880) for x in list(iter.product(p, d, q))]
+# seasonal_PQD = [(x[0], x[1], x[2], 24) for x in list(iter.product(p, d, q))]
 #
 # i = 0
 # AIC = []
@@ -75,8 +77,8 @@ y_test = df_raw[2]/100
 #                                                              SARIMAX_model[AIC.index(min(AIC))][1]))
 
 # SARIMAX model
-model = stats.tsa.statespace.SARIMAX(y_test[0:31925], order=[1, 1, 1],
-                                   seasonal_order=[1,1,1,168], enforce_stationarity=False,
+model = stats.tsa.statespace.SARIMAX(y_test[0:35135], order=[1, 1, 1],
+                                   seasonal_order=[1,1,1,24], enforce_stationarity=False,
                                    enforce_invertibility=False)
 
 
@@ -89,34 +91,32 @@ print(results.summary())
 # y_pred = results.get_prediction(start=328, dynamic=True)
 # pred_ci = y_pred.conf_int()
 
-y_pred = results.get_forecast(steps=3546)
+y_pred = results.get_forecast(steps=337)
 
 # Get confidence intervals of forecasts
 pred_ci = y_pred.conf_int()
 
-print(y_test[31925:], y_pred.predicted_mean)
+# print(y_test[35135:], y_pred.predicted_mean)
 # mse = mean_squared_error(y_test[327:]*100, y_pred*100)
 y_forecasted = y_pred.predicted_mean
-y_truth = y_test[31925:]
+y_truth = y_test[35135:]
 
 
 # Compute the mean square error
 mse = ((y_forecasted - y_truth) ** 2).mean()
 
-print("MSE: ", mse)
+print("RMSE: ", math.sqrt(mse*100))
 print('MAPE:', np.mean(np.abs(y_truth - y_forecasted) / (y_truth)) * 100,'\n')
 # print('RMSE:', mean_squared_error(y_test[327:] * 100, y_pred.predicted_mean*100, squared=False))
 # print('R-squared:', r2_score(y_test[327:], y_pred.predicted_mean))
 
 # Plotting the results
 fig = plt.figure(figsize=(60, 8))
-ax = y_test[31925:].plot(label='Observed')
+ax = y_test[35135:].plot(label='Observed')
 y_pred.predicted_mean.plot(ax=ax, label='Forecast', alpha=.7)
-ax.fill_between(pred_ci.index,
-                pred_ci.iloc[:, 0],
-                pred_ci.iloc[:, 1], color='k', alpha=.2)
 # ax.fill_betweenx(ax.get_ylim(), y_test.index[-1],
 #                  alpha=.1, zorder=-1)
+plt.title("SARIMAX", fontsize=14)
 ax.set_xlabel('Daily')
 ax.set_ylabel('Electricity Load')
 
@@ -127,11 +127,11 @@ plt.legend(loc='upper right')
 # plt.xlabel('Daily')
 # plt.ylabel('Electricity load')
 plt.show()
-plt.savefig('results/SARIMAX/final_output.jpg', bbox_inches='tight')
+fig.savefig('results/SARIMAX/final_output.jpg', bbox_inches='tight')
 
 # Storing the result in a file: 'load_forecasting_result.txt'
-predicted_test_result = y_pred * 100
+predicted_test_result = y_pred.predicted_mean * 100
 np.savetxt('results/SARIMAX/predicted_values.txt', predicted_test_result)
-actual_test_result = y_test[31925:] * 100
+actual_test_result = y_test[35135:] * 100
 np.savetxt('results/SARIMAX/test_values.txt', actual_test_result)
 

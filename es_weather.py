@@ -33,9 +33,9 @@ def single_exponential_smoothing(alpha, y_test):
     fig.savefig('results/SES_weather/final_output.jpg', bbox_inches='tight')
 
     # print("Predicted values: ", y_pred, "\n")
-    mse_ses = mean_squared_error(y_test[327:-1], y_pred_ses)
-    rmse_ses = mean_squared_error(y_pred_ses, y_test[327:-1], squared=False)
-    r2_ses = r2_score(y_test[327:-1], y_pred_ses)
+    mse_ses = mean_squared_error(y_test[327:-1]*1000, y_pred_ses*1000)
+    rmse_ses = mean_squared_error(y_pred_ses*1000, y_test[327:-1]*1000, squared=False)
+    r2_ses = r2_score(y_test[327:-1]*1000, y_pred_ses*1000)
 
     # Storing the result in a file: 'load_forecasting_result.txt'
     predicted_test_result = y_pred_ses
@@ -60,9 +60,9 @@ def double_exponential_smoothing(alpha, beta, y_test):
     plt.show()
 
     # print("Predicted values: ", y_pred_des, "\n")
-    mse_des = mean_squared_error(y_test[327:-1], y_pred_des)
-    rmse_des = mean_squared_error(y_pred_des, y_test[327:-1], squared=False)
-    r2_des = r2_score(y_test[327:-1], y_pred_des)
+    mse_des = mean_squared_error(y_test[327:-1]*1000, y_pred_des*1000)
+    rmse_des = mean_squared_error(y_pred_des*1000, y_test[327:-1]*1000, squared=False)
+    r2_des = r2_score(y_test[327:-1]*1000, y_pred_des*1000)
 
     np.savetxt('results/DES_weather/predicted_values_model.txt', y_pred_des)
     actual_test_result = y_test
@@ -126,9 +126,9 @@ def triple_exponential_smoothing(season, y_test):
     plt.show()
 
     # print("Predicted values: ", y_pred_tes, "\n")
-    mse_tes = mean_squared_error(y_test[327:-1], y_pred_tes)
-    rmse_tes = mean_squared_error(y_pred_tes, y_test[327:-1], squared=False)
-    r2_tes = r2_score(y_test[327:-1], y_pred_tes)
+    mse_tes = mean_squared_error(y_test[327:-1]*1000, y_pred_tes*1000)
+    rmse_tes = mean_squared_error(y_pred_tes*1000, y_test[327:-1]*1000, squared=False)
+    r2_tes = r2_score(y_test[327:-1]*1000, y_pred_tes*1000)
 
     np.savetxt('results/TES_weather/predicted_values_model.txt', y_pred_tes)
     actual_test_result = y_test
