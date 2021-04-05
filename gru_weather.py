@@ -105,8 +105,8 @@ print ("\nX.shape " , X.shape)
 print ("y.shape" , y.shape)
 
 #Splitting into training & test sets
-train_X , train_y = X[:255, :] , y[:255, :]
-test_X , test_y = X[255:, :] , y[255:, :]
+train_X, train_y = X[:318, :], y[:318, :]
+test_X, test_y = X[318:, :], y[318:, :]
 print ("\ntrain_X" , train_X.shape)
 print ("train_y" , train_y.shape)
 print ("test_X" , test_X.shape)
@@ -114,7 +114,7 @@ print ("test_y" , test_y.shape)
 
 
 #Learning Rate
-opt = keras.optimizers.Adam(learning_rate=0.001)
+opt = keras.optimizers.Adam(learning_rate=0.0001)
 
 #GRU Model
 model = Sequential()
@@ -273,5 +273,5 @@ end_time = time.time()
 print("RMSE:", mean_squared_error(test_scaled*1000, y_pred*1000, squared=False))
 # print("R-squared:", r2_score(test_y[65].reshape((1,15))*1000, predicted_values*1000))
 print("R-squared:", r2_score(test_scaled, y_pred))
-print('MAPE:', np.mean(np.abs((test_scaled*1000 - y_pred*1000) / (test_scaled*1000))) * 100,'\n')
+print('MAPE:', np.mean(np.abs((test_scaled*1000 - y_pred*1000) / (test_scaled*1000))),'\n')
 print("Total time: ", end_time - start_time)
