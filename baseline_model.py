@@ -15,7 +15,8 @@ for i in range(y.size):
     temp.append([df_raw[0][i],df_raw[1][i]])
 x = np.array(temp)
 
-
+x = x[:720]
+y = y[:720]
 print(x)
 print(y)
 model = LinearRegression().fit(x,y)
