@@ -1,10 +1,11 @@
 # project-energy
- This project is for forecasting the load of electricity consumed in the Mumbai Metropolitan Region using various traditional and ML networks such as LSTM, RNN, GRU, among others.
+ This project is for analysing the time-series algorithms via a study of electricity load forecasting on univariate and multivariate datasets in the MM Region using various classical (SMA, WMA, CMA, EMA), exponential (SES, DES, TES), ML (ARIMA, SARIMAX) & DL methods (LSTM, GRU, RNN) for univariate and multivariate datasets using Keras API
+
  
 # Datasets
 It is divided into two primary datasets:
  - Univariate dataset having only the load
- - Multivariate dataset having weather as well as the load
+ - Multivariate dataset having weather (Temperature, Dew Point, Humiditiy, Wind Speed, Pressure) as well as the load
  
 # Models
 Each of the dataset forecasts using the following methods:
