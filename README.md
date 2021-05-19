@@ -8,6 +8,7 @@ It is divided into two primary datasets:
  
 # Models
 Each of the dataset forecasts using the following methods:
- - Classical Methods
- - Exponential Methods
- - Machine Learning Models
+ - Classical Methods: SMA, WMA, CMA, EMA
+ - Exponential Methods: SES, DES, TES
+ - Machine Learning Models: ARIMA, SARIMAX
+ - Deep Learning Models: LSTM, GRU, RNN
