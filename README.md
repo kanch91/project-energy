@@ -1,5 +1,5 @@
 # project-energy
- This project is for analysing the time-series algorithms via a study of electricity load forecasting on univariate and multivariate datasets in the MM Region using various classical (SMA, WMA, CMA, EMA), exponential (SES, DES, TES), ML (ARIMA, SARIMAX) & DL methods (LSTM, GRU, RNN) for univariate and multivariate datasets using Keras API
+ This project is for analysing the time-series algorithms via a study of electricity load forecasting on univariate and multivariate datasets in the MM Region using various classical/moving averages (SMA, WMA, CMA, EMA), exponential smoothing methods (SES, DES, TES), statistical models (ARIMA, SARIMAX) & DL models (LSTM, GRU, RNN) for univariate and multivariate datasets using Keras API
 
  
 # Datasets
